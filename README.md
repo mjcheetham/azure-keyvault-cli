@@ -123,11 +123,11 @@ kv get <vault> <secret> [--force]
 ##### Examples
 
 ```
-$ kv list foo supersecret
+$ kv get foo supersecret
 INFO: Secret value is masked; '--force' option is not present
 ********
 
-$ kv list foo supersecret --force
+$ kv get foo supersecret --force
 thisisthepassword
 ```
 
@@ -135,6 +135,7 @@ thisisthepassword
 
 - This tool does not support Key Vault _certificates_ or _keys_ at this time.
 - To be able to authenticate with a Key Vault, you must have first configured an AAD Application (and know it's ID _(client ID)_) with 'Get' and 'List' permissions for secrets. In a future version the goal is to add the capability to automatically provision this.
+- The CommandLineParser library does not support(?) nested verbs. It would be better to make all the `vault-*` and `auth-*` top-level verbs into nested verbs (ie., `kv vault add` rather than `kv vault-add`).
 
 ## Disclaimer
 
