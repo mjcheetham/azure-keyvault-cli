@@ -6,42 +6,14 @@ namespace Mjcheetham.KeyVaultCommandLine.Configuration
 {
     internal class ConfigurationManager : IConfigurationManager
     {
+        private const string ConfigFileName = ".kvconfig";
+
         private readonly string _configurationFilePath;
 
-        public ConfigurationManager(string path)
+        public ConfigurationManager()
         {
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            if (!Path.IsPathRooted(path))
-            {
-                throw new ArgumentException("Path must be an absolute path", nameof(path));
-            }
-
-            if (File.Exists(path))
-            {
-                _configurationFilePath = path;
-            }
-            else if (Directory.Exists(path))
-            {
-                _configurationFilePath = SearchForConfiguration(path);
-            }
-            else
-            {
-                throw new ArgumentException("Value should be either a valid file path to a configuration file or a directory", nameof(path));
-            }
-
-            if (_configurationFilePath == null)
-            {
-                Configuration = new Configuration();
-                _configurationFilePath = Path.Combine(Directory.GetCurrentDirectory(), ".kvconfig");
-            }
-            else
-            {
-                ReloadConfiguration();
-            }
+            _configurationFilePath = GetUserConfigPath();
+            ReloadConfiguration();
         }
 
         #region IConfigurationManager
@@ -50,8 +22,15 @@ namespace Mjcheetham.KeyVaultCommandLine.Configuration
 
         public void ReloadConfiguration()
         {
-            var json = File.ReadAllText(_configurationFilePath);
-            Configuration = DeserializeConfiguration(json);
+            if (File.Exists(_configurationFilePath))
+            {
+                var json = File.ReadAllText(_configurationFilePath);
+                Configuration = DeserializeConfiguration(json);
+            }
+            else
+            {
+                Configuration = new Configuration();
+            }
         }
 
         public void SaveConfiguration()
@@ -64,17 +43,9 @@ namespace Mjcheetham.KeyVaultCommandLine.Configuration
 
         #region Helpers
 
-        private string SearchForConfiguration(string rootPath)
+        private static string GetUserConfigPath()
         {
-            foreach(var child in Directory.GetFileSystemEntries(rootPath))
-            {
-                if (StringComparer.OrdinalIgnoreCase.Equals(Path.GetExtension(child), ".kvconfig"))
-                {
-                    return child;
-                }
-            }
-
-            return null;
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ConfigFileName);
         }
 
         private static Configuration DeserializeConfiguration(string json)

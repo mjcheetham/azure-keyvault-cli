@@ -5,7 +5,6 @@ using Mjcheetham.KeyVaultCommandLine.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Mjcheetham.KeyVaultCommandLine
@@ -45,7 +44,7 @@ namespace Mjcheetham.KeyVaultCommandLine
             {
                 if (options.Verbose)
                 {
-                    WriteJson(secret);
+                    PrintJson(secret);
                 }
                 else
                 {
@@ -80,7 +79,7 @@ namespace Mjcheetham.KeyVaultCommandLine
 
             if (options.Verbose)
             {
-                WriteJson(secret);
+                PrintJson(secret);
             }
             else
             {
@@ -90,11 +89,11 @@ namespace Mjcheetham.KeyVaultCommandLine
 
         private static void VaultList(VaultListOptions options)
         {
-            var configManager = new ConfigurationManager(Directory.GetCurrentDirectory());
+            var configManager = CreateConfigurationManger();
 
             if (options.Verbose)
             {
-                WriteJson(configManager.Configuration.KnownVaults);
+                PrintJson(configManager.Configuration.KnownVaults);
             }
             else
             {
@@ -107,7 +106,7 @@ namespace Mjcheetham.KeyVaultCommandLine
 
         private static void VaultAdd(VaultAddOptions options)
         {
-            var configManager = new ConfigurationManager(Directory.GetCurrentDirectory());
+            var configManager = CreateConfigurationManger();
 
             var newVault = new VaultConfig
             {
@@ -126,7 +125,7 @@ namespace Mjcheetham.KeyVaultCommandLine
 
         private static void VaultRemove(VaultRemoveOptions options)
         {
-            var configManager = new ConfigurationManager(Directory.GetCurrentDirectory());
+            var configManager = new ConfigurationManager();
 
             if (configManager.Configuration.KnownVaults.Remove(options.Name))
             {
@@ -137,6 +136,11 @@ namespace Mjcheetham.KeyVaultCommandLine
         #endregion
 
         #region Helpers
+
+        private static IConfigurationManager CreateConfigurationManger()
+        {
+            return new ConfigurationManager();
+        }
 
         private static IKeyVaultService CreateVaultService(VaultAuthConfig authConfig)
         {
@@ -160,7 +164,7 @@ namespace Mjcheetham.KeyVaultCommandLine
             return keyVaultService;
         }
 
-        private static void WriteJson(object obj)
+        private static void PrintJson(object obj)
         {
             var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
             Console.WriteLine(json);
@@ -168,7 +172,7 @@ namespace Mjcheetham.KeyVaultCommandLine
 
         private static VaultConfig GetKnownVaultConfig(string vaultName)
         {
-            var configManager = new ConfigurationManager(Directory.GetCurrentDirectory());
+            var configManager = CreateConfigurationManger();
 
             VaultConfig vaultConfig;
             configManager.Configuration.KnownVaults.TryGetValue(vaultName, out vaultConfig);
