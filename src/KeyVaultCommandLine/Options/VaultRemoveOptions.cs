@@ -2,10 +2,10 @@ using CommandLine;
 
 namespace Mjcheetham.KeyVaultCommandLine.Options
 {
-    [Verb("vault-remove", HelpText = "Manage Key Vault CLI configuration (Remove)")]
+    [Verb("vault-remove", HelpText = Strings.VaultRemove_Verb_Help)]
     internal class VaultRemoveOptions
     {
-        [Option('n', "name", Required = true, HelpText = "Name of the Key Vault to remove")]
+        [Value(0, MetaName = "name", Required = true, HelpText = Strings.VaultRemove_Param_Name_Help)]
         public string Name { get; internal set; }
     }
 }

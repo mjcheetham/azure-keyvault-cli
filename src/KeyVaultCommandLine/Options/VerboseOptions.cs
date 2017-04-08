@@ -4,7 +4,7 @@ namespace Mjcheetham.KeyVaultCommandLine.Options
 {
     internal class VerboseOptions
     {
-        [Option("verbose", HelpText = "Display verbose information")]
+        [Option('v', "verbose", HelpText = Strings.Common_Param_Verbose_Help)]
         public bool Verbose { get; set; }
     }
 }

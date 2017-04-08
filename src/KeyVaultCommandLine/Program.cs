@@ -27,7 +27,7 @@ namespace Mjcheetham.KeyVaultCommandLine
 
         private static void List(ListOptions options)
         {
-            var vaultConfig = GetKnownVaultConfig(options.VaultName);
+            var vaultConfig = GetKnownVaultConfig(options.Vault);
             IKeyVaultService kvService = CreateVaultService(vaultConfig.Authentication);
 
             IEnumerable<SecretItem> secrets = null;
@@ -37,7 +37,7 @@ namespace Mjcheetham.KeyVaultCommandLine
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"ERROR: Failed to list secrets in vault '{options.VaultName}'. {ex.Message}");
+                PrintException($"Failed to list secrets in vault '{options.Vault}'", ex, options.Verbose);
                 return;
             }
 
@@ -56,10 +56,10 @@ namespace Mjcheetham.KeyVaultCommandLine
 
         private static void Get(GetOptions options)
         {
-            var vaultConfig = GetKnownVaultConfig(options.VaultName);
+            var vaultConfig = GetKnownVaultConfig(options.Vault);
             IKeyVaultService kvService = CreateVaultService(vaultConfig.Authentication);
 
-            var uri = new Uri($"{vaultConfig.Url}/secrets/{options.SecretName}");
+            var uri = new Uri($"{vaultConfig.Url}/secrets/{options.Secret}");
 
             SecretBundle secret = null;
             try
@@ -68,14 +68,14 @@ namespace Mjcheetham.KeyVaultCommandLine
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"ERROR: Failed to get secret '{options.SecretName}' from vault '{options.VaultName}'. {ex.Message}");
+                PrintException($"Failed to get secret '{options.Secret}' from vault '{options.Vault}'", ex, options.Verbose);
                 return;
             }
 
             if (!options.Force)
             {
                 secret.Value = "********";
-                Console.WriteLine("INFO: Secret value is masked; '--force' option is not present.");
+                PrintInfo("Secret value is masked; '--force' option is not present");
             }
 
             if (options.Verbose)
@@ -173,6 +173,25 @@ namespace Mjcheetham.KeyVaultCommandLine
             VaultConfig vaultConfig;
             configManager.Configuration.KnownVaults.TryGetValue(vaultName, out vaultConfig);
             return vaultConfig;
+        }
+
+        private static void PrintException(string errorMessage, Exception ex, bool verbose = false)
+        {
+            var exMessage = ex.InnerException == null
+                ? ex.Message
+                : $"{ex.Message} ({ex.InnerException.Message})";
+
+            Console.Error.WriteLine($"ERROR: {errorMessage}. {exMessage}");
+
+            if (verbose)
+            {
+                Console.Error.WriteLine($"ERROR: {ex.ToString()}");
+            }
+        }
+
+        private static void PrintInfo(string message)
+        {
+            Console.WriteLine($"INFO: {message}.");
         }
 
         #endregion

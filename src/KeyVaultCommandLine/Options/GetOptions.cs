@@ -2,13 +2,16 @@
 
 namespace Mjcheetham.KeyVaultCommandLine.Options
 {
-    [Verb("get", HelpText = "Get a secret from Key Vault")]
-    internal class GetOptions : CommonOptions
+    [Verb("get", HelpText = Strings.Get_Verb_Help)]
+    internal class GetOptions : VerboseOptions
     {
-        [Option('n', "name", Required = true, HelpText = "Name of secret to get from the vault")]
-        public string SecretName { get; set; }
+        [Value(0, MetaName = "vault", Required = true, HelpText = Strings.Common_Param_Vault_Help)]
+        public string Vault { get; set; }
 
-        [Option('f', "force", HelpText = "Print the plain-text secret value")]
+        [Value(1, MetaName = "secret", Required = true, HelpText = Strings.Get_Param_Secret_Help)]
+        public string Secret { get; set; }
+
+        [Option('f', "force", HelpText = Strings.Get_Param_Force_Help)]
         public bool Force { get; set; }
     }
 }
