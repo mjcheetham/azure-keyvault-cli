@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Mjcheetham.KeyVaultCommandLine.Configuration
 {
@@ -37,6 +39,30 @@ namespace Mjcheetham.KeyVaultCommandLine.Configuration
         {
             var json = SerializeConfiguration(Configuration);
             File.WriteAllText(_configurationFilePath, json);
+        }
+
+        public VaultConfig GetVaultConfig(string vaultName)
+        {
+            if (string.IsNullOrWhiteSpace(vaultName))
+            {
+                throw new ArgumentNullException(nameof(vaultName));
+            }
+
+            return Configuration.KnownVaults
+                .FirstOrDefault(x => StringComparer.OrdinalIgnoreCase.Equals(x.Key, vaultName))
+                .Value;
+        }
+
+        public AuthConfig GetAuthConfig(VaultConfig vaultConfig)
+        {
+            if (vaultConfig == null)
+            {
+                throw new ArgumentNullException(nameof(vaultConfig));
+            }
+
+            return Configuration.Authentication
+                .FirstOrDefault(x => StringComparer.OrdinalIgnoreCase.Equals(x.Key, vaultConfig.Url) || Regex.IsMatch(vaultConfig.Url, x.Key))
+                .Value;
         }
 
         #endregion

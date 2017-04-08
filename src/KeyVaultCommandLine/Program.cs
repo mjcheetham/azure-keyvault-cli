@@ -11,23 +11,40 @@ namespace Mjcheetham.KeyVaultCommandLine
 {
     public class Program
     {
+        private static IConfigurationManager _configManager;
+
+        private static IConfigurationManager ConfigManager => _configManager ?? (_configManager = CreateConfigurationManger());
+
         public static void Main(string[] args)
         {
             Parser.Default
-                .ParseArguments<ListOptions, GetOptions, VaultListOptions, VaultAddOptions, VaultRemoveOptions>(args)
+                .ParseArguments<ListOptions, GetOptions,
+                                VaultListOptions, VaultAddOptions, VaultRemoveOptions,
+                                AuthListOptions, AuthAddOptions, AuthRemoveOptions>(args)
                 .WithParsed<ListOptions>(List)
                 .WithParsed<GetOptions>(Get)
                 .WithParsed<VaultListOptions>(VaultList)
                 .WithParsed<VaultAddOptions>(VaultAdd)
-                .WithParsed<VaultRemoveOptions>(VaultRemove);
+                .WithParsed<VaultRemoveOptions>(VaultRemove)
+                .WithParsed<AuthListOptions>(AuthList)
+                .WithParsed<AuthAddOptions>(AuthAdd)
+                .WithParsed<AuthRemoveOptions>(AuthRemove);
         }
 
         #region Option handlers
 
         private static void List(ListOptions options)
         {
-            var vaultConfig = GetKnownVaultConfig(options.Vault);
-            IKeyVaultService kvService = CreateVaultService(vaultConfig.Authentication);
+            var vaultConfig = ConfigManager.GetVaultConfig(options.Vault);
+            if (vaultConfig == null)
+            {
+                PrintError($"Unknown vault '{options.Vault}'");
+                return;
+            }
+
+            var authConfig = ConfigManager.GetAuthConfig(vaultConfig);
+
+            IKeyVaultService kvService = CreateVaultService(authConfig);
 
             IEnumerable<SecretItem> secrets = null;
             try
@@ -55,8 +72,16 @@ namespace Mjcheetham.KeyVaultCommandLine
 
         private static void Get(GetOptions options)
         {
-            var vaultConfig = GetKnownVaultConfig(options.Vault);
-            IKeyVaultService kvService = CreateVaultService(vaultConfig.Authentication);
+            var vaultConfig = ConfigManager.GetVaultConfig(options.Vault);
+            if (vaultConfig == null)
+            {
+                PrintError($"Unknown vault '{options.Vault}'");
+                return;
+            }
+
+            var authConfig = ConfigManager.GetAuthConfig(vaultConfig);
+
+            IKeyVaultService kvService = CreateVaultService(authConfig);
 
             var uri = new Uri($"{vaultConfig.Url}/secrets/{options.Secret}");
 
@@ -89,15 +114,13 @@ namespace Mjcheetham.KeyVaultCommandLine
 
         private static void VaultList(VaultListOptions options)
         {
-            var configManager = CreateConfigurationManger();
-
             if (options.Verbose)
             {
-                PrintJson(configManager.Configuration.KnownVaults);
+                PrintJson(ConfigManager.Configuration.KnownVaults);
             }
             else
             {
-                foreach (var vault in configManager.Configuration.KnownVaults.Select(x => new { Name = x.Key, Configuration = x.Value }))
+                foreach (var vault in ConfigManager.Configuration.KnownVaults.Select(x => new { Name = x.Key, Configuration = x.Value }))
                 {
                     Console.WriteLine($"{vault.Name}: {vault.Configuration.Url}");
                 }
@@ -108,17 +131,7 @@ namespace Mjcheetham.KeyVaultCommandLine
         {
             var configManager = CreateConfigurationManger();
 
-            var newVault = new VaultConfig
-            {
-                Url = options.Url,
-                Authentication = new VaultAuthConfig
-                {
-                    ClientId = options.ClientId,
-                    CertificateThumbprint = options.CertificateThumbprint
-                }
-            };
-
-            configManager.Configuration.KnownVaults[options.Name] = newVault;
+            configManager.Configuration.KnownVaults[options.Name] = new VaultConfig(options.Url);
 
             configManager.SaveConfiguration();
         }
@@ -133,6 +146,30 @@ namespace Mjcheetham.KeyVaultCommandLine
             }
         }
 
+        private static void AuthList(AuthListOptions options)
+        {
+            PrintJson(ConfigManager.Configuration.Authentication);
+        }
+
+        private static void AuthAdd(AuthAddOptions options)
+        {
+            var configManager = CreateConfigurationManger();
+
+            configManager.Configuration.Authentication[options.Url] = new AuthConfig(options.ClientId, options.CertificateThumbprint);
+
+            configManager.SaveConfiguration();
+        }
+
+        private static void AuthRemove(AuthRemoveOptions options)
+        {
+            var configManager = new ConfigurationManager();
+
+            if (configManager.Configuration.Authentication.Remove(options.Url))
+            {
+                configManager.SaveConfiguration();
+            }
+        }
+
         #endregion
 
         #region Helpers
@@ -142,7 +179,7 @@ namespace Mjcheetham.KeyVaultCommandLine
             return new ConfigurationManager();
         }
 
-        private static IKeyVaultService CreateVaultService(VaultAuthConfig authConfig)
+        private static IKeyVaultService CreateVaultService(AuthConfig authConfig)
         {
             IKeyVaultService keyVaultService;
 
@@ -170,32 +207,30 @@ namespace Mjcheetham.KeyVaultCommandLine
             Console.WriteLine(json);
         }
 
-        private static VaultConfig GetKnownVaultConfig(string vaultName)
+        private static void PrintError(string message)
         {
-            var configManager = CreateConfigurationManger();
-
-            VaultConfig vaultConfig;
-            configManager.Configuration.KnownVaults.TryGetValue(vaultName, out vaultConfig);
-            return vaultConfig;
-        }
-
-        private static void PrintException(string errorMessage, Exception ex, bool verbose = false)
-        {
-            var exMessage = ex.InnerException == null
-                ? ex.Message
-                : $"{ex.Message} ({ex.InnerException.Message})";
-
-            Console.Error.WriteLine($"ERROR: {errorMessage}. {exMessage}");
-
-            if (verbose)
-            {
-                Console.Error.WriteLine($"ERROR: {ex.ToString()}");
-            }
+            Console.Error.WriteLine($"ERROR: {message}");
         }
 
         private static void PrintInfo(string message)
         {
-            Console.WriteLine($"INFO: {message}.");
+            Console.WriteLine($"INFO: {message}");
+        }
+
+        private static void PrintException(string message, Exception ex, bool verbose = false)
+        {
+            if (verbose)
+            {
+                PrintError(ex.ToString());
+            }
+            else
+            {
+                var exMessage = ex.InnerException == null
+                              ? ex.Message
+                              : $"{ex.Message} ({ex.InnerException.Message})";
+
+                PrintError($"{message}. {exMessage}");
+            }
         }
 
         #endregion

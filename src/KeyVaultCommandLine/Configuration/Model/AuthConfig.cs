@@ -3,8 +3,16 @@ using System;
 
 namespace Mjcheetham.KeyVaultCommandLine.Configuration
 {
-    internal class VaultAuthConfig
+    internal class AuthConfig
     {
+        internal AuthConfig() { }
+
+        public AuthConfig(Guid clientId, string certificateThumbprint)
+        {
+            ClientId = clientId;
+            CertificateThumbprint = certificateThumbprint;
+        }
+
         [JsonProperty("client")]
         public Guid ClientId { get; set; }
 

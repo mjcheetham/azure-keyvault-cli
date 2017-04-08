@@ -8,5 +8,9 @@ namespace Mjcheetham.KeyVaultCommandLine.Configuration
         void ReloadConfiguration();
 
         void SaveConfiguration();
+
+        VaultConfig GetVaultConfig(string vaultName);
+
+        AuthConfig GetAuthConfig(VaultConfig vaultConfig);
     }
 }
