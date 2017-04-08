@@ -4,7 +4,7 @@ using CommandLine;
 namespace Mjcheetham.KeyVaultCommandLine.Options
 {
     [Verb("vault-add", HelpText = "Manage Key Vault CLI configuration (Add)")]
-    public class VaultAddOptions
+    internal class VaultAddOptions
     {
         [Option('n', "name", Required = true, HelpText = "Name of the Key Vault")]
         public string Name { get; set; }

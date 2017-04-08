@@ -96,6 +96,7 @@
     <Compile Include="Options\VaultAddOptions.cs" />
     <Compile Include="Options\VaultListOptions.cs" />
     <Compile Include="Options\VaultRemoveOptions.cs" />
+    <Compile Include="Options\VerboseOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

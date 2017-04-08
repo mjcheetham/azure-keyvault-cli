@@ -1,9 +1,12 @@
 ﻿using CommandLine;
+using Microsoft.Azure.KeyVault.Models;
 using Mjcheetham.KeyVaultCommandLine.Configuration;
 using Mjcheetham.KeyVaultCommandLine.Options;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Mjcheetham.KeyVaultCommandLine
 {
@@ -27,7 +30,16 @@ namespace Mjcheetham.KeyVaultCommandLine
             var vaultConfig = GetKnownVaultConfig(options.VaultName);
             IKeyVaultService kvService = CreateVaultService(vaultConfig.Authentication);
 
-            var secrets = kvService.GetSecrets(new Uri(vaultConfig.Url));
+            IEnumerable<SecretItem> secrets = null;
+            try
+            {
+                secrets = kvService.GetSecrets(new Uri(vaultConfig.Url));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"ERROR: Failed to list secrets in vault '{options.VaultName}'. {ex.Message}");
+                return;
+            }
 
             foreach (var secret in secrets)
             {
@@ -49,7 +61,16 @@ namespace Mjcheetham.KeyVaultCommandLine
 
             var uri = new Uri($"{vaultConfig.Url}/secrets/{options.SecretName}");
 
-            var secret = kvService.GetSecret(uri);
+            SecretBundle secret = null;
+            try
+            {
+                secret = kvService.GetSecret(uri);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"ERROR: Failed to get secret '{options.SecretName}' from vault '{options.VaultName}'. {ex.Message}");
+                return;
+            }
 
             if (!options.Force)
             {
@@ -71,7 +92,17 @@ namespace Mjcheetham.KeyVaultCommandLine
         {
             var configManager = new ConfigurationManager(Directory.GetCurrentDirectory());
 
-            WriteJson(configManager.Configuration.KnownVaults);
+            if (options.Verbose)
+            {
+                WriteJson(configManager.Configuration.KnownVaults);
+            }
+            else
+            {
+                foreach (var vault in configManager.Configuration.KnownVaults.Select(x => new { Name = x.Key, Configuration = x.Value }))
+                {
+                    Console.WriteLine($"{vault.Name}: {vault.Configuration.Url}");
+                }
+            }
         }
 
         private static void VaultAdd(VaultAddOptions options)
