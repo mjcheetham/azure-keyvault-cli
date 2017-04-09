@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Mjcheetham.KeyVaultCommandLine.Configuration.Model;
 using Newtonsoft.Json;
 
 namespace Mjcheetham.KeyVaultCommandLine.Configuration

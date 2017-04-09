@@ -6,8 +6,8 @@ using Mjcheetham.KeyVaultCommandLine.Services;
 
 namespace Mjcheetham.KeyVaultCommandLine.Commands
 {
-    [Verb("get", HelpText = Strings.Get_Verb_Help)]
-    internal class GetCommand : VaultCommand
+    [Verb("set", HelpText = Strings.Set_Verb_Help)]
+    internal class SetCommand : Command
     {
         [Value(0, MetaName = "vault", Required = true, HelpText = Strings.Common_Param_Vault_Help)]
         public string Vault { get; set; }
@@ -15,12 +15,12 @@ namespace Mjcheetham.KeyVaultCommandLine.Commands
         [Value(1, MetaName = "secret", Required = true, HelpText = Strings.Common_Param_Secret_Help)]
         public string Secret { get; set; }
 
-        [Option('f', "force", HelpText = Strings.Get_Param_Force_Help)]
-        public bool Force { get; set; }
+        [Value(2, MetaName = "value", Required = true, HelpText = Strings.Set_Param_Value_Help)]
+        public string Value { get; set; }
 
         public override void Execute()
         {
-            var vaultConfig = ConfigurationManager.GetVaultConfig(Vault); 
+            var vaultConfig = ConfigurationManager.GetVaultConfig(Vault);
             if (vaultConfig == null)
             {
                 WriteError($"Unknown vault '{Vault}'");
@@ -31,30 +31,24 @@ namespace Mjcheetham.KeyVaultCommandLine.Commands
 
             IKeyVaultService kvService = CreateVaultService(authConfig);
 
-            SecretBundle secret;
+            SecretBundle newSecret;
             try
             {
-                secret = kvService.GetSecret(vaultConfig.GetVaultUri($"secrets/{Secret}"));
+                newSecret = kvService.SetSecret(vaultConfig.GetVaultUri(), Secret, Value);
             }
             catch (Exception ex)
             {
-                WriteError($"Failed to get secret '{Secret}' from vault '{Vault}'", ex);
+                WriteError($"Failed to set secret '{Secret}' in vault '{Vault}'", ex);
                 return;
-            }
-
-            if (!Force)
-            {
-                secret.Value = "********";
-                WriteInfo("Secret value is masked; '--force' option is not present");
             }
 
             if (Verbose)
             {
-                Console.Out.WriteJson(secret);
+                Console.Out.WriteJson(newSecret);
             }
             else
             {
-                Console.Out.WriteLine(secret.Value);
+                WriteInfo($"Secret '{Secret}' was set successfully");
             }
         }
     }

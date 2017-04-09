@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CommandLine;
 using Microsoft.Azure.KeyVault.Models;
+using Mjcheetham.KeyVaultCommandLine.Services;
 
 namespace Mjcheetham.KeyVaultCommandLine.Commands
 {

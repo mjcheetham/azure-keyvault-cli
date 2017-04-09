@@ -6,7 +6,7 @@ using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
-namespace Mjcheetham.KeyVaultCommandLine
+namespace Mjcheetham.KeyVaultCommandLine.Services
 {
     public class KeyVaultService : IKeyVaultService
     {
@@ -62,6 +62,11 @@ namespace Mjcheetham.KeyVaultCommandLine
             return _keyVaultClient.GetSecretsAsync(vaultUri.ToString()).GetAwaiter().GetResult();
         }
 
+        public SecretBundle SetSecret(Uri vaultUri, string secretName, string secretValue)
+        {
+            return _keyVaultClient.SetSecretAsync(vaultUri.ToString(), secretName, secretValue).GetAwaiter().GetResult();
+        }
+
         #endregion
 
         #region Private
@@ -70,7 +75,7 @@ namespace Mjcheetham.KeyVaultCommandLine
         {
             var authContext = new AuthenticationContext(authority, TokenCache.DefaultShared);
 
-            AuthenticationResult authResult = null;
+            AuthenticationResult authResult;
             switch (_authenticationType)
             {
                 case KeyVaultAuthenticationType.ClientCertificate:

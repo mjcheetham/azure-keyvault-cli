@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Mjcheetham.KeyVaultCommandLine
+namespace Mjcheetham.KeyVaultCommandLine.Services
 {
     internal class StandardConsole : IConsole
     {

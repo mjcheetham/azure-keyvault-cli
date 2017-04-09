@@ -4,6 +4,7 @@
     {
         public const string Common_Param_Verbose_Help = "Display verbose information";
         public const string Common_Param_Vault_Help = "Name of known vault";
+        public const string Common_Param_Secret_Help = "Name of secret";
 
         #region Vault
 
@@ -47,10 +48,15 @@
         #region Get
 
         public const string Get_Verb_Help = "Get a secret from Key Vault";
-        public const string Get_Param_Secret_Help = "Name of secret to get from the vault";
         public const string Get_Param_Force_Help = "Print the plain-text secret value";
 
         #endregion
 
+        #region Set
+
+        public const string Set_Verb_Help = "Create/set a secret in a Key Vault";
+        public const string Set_Param_Value_Help = "Secret value to store in the vault";
+
+        #endregion
     }
 }

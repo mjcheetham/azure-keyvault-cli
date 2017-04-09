@@ -1,4 +1,4 @@
-namespace Mjcheetham.KeyVaultCommandLine
+namespace Mjcheetham.KeyVaultCommandLine.Services
 {
     public enum KeyVaultAuthenticationType
     {

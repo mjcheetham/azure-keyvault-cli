@@ -144,6 +144,19 @@ $ kv get foo supersecret --force
 thisisthepassword
 ```
 
+#### Create/update a secret
+
+```
+kv set <vault> <secret> <value>
+```
+
+##### Examples
+
+```
+$ kv set foo supersecret b3tt3rPa55w0rd
+INFO: Secret 'supersecret' was set successfully
+```
+
 ## Limitations
 
 - This tool does not support Key Vault _certificates_ or _keys_ at this time.

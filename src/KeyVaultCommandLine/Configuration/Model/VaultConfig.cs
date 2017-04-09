@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
-namespace Mjcheetham.KeyVaultCommandLine.Configuration
+namespace Mjcheetham.KeyVaultCommandLine.Configuration.Model
 {
     internal class VaultConfig
     {

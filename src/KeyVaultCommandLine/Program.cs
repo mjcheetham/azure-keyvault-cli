@@ -3,6 +3,7 @@ using Mjcheetham.KeyVaultCommandLine.Commands;
 using Mjcheetham.KeyVaultCommandLine.Configuration;
 using Ninject;
 using System;
+using Mjcheetham.KeyVaultCommandLine.Services;
 
 namespace Mjcheetham.KeyVaultCommandLine
 {
@@ -13,10 +14,11 @@ namespace Mjcheetham.KeyVaultCommandLine
         public static void Main(string[] args)
         {
             _kernel = new StandardKernel();
-            _kernel.Bind<IConfigurationManager>().ToMethod(_ => new ConfigurationManager());
-            _kernel.Bind<IConsole>().ToMethod(_ => new StandardConsole());
+            _kernel.Bind<IConfigurationManager>().To<ConfigurationManager>();
+            _kernel.Bind<ICertificateProvider>().To<LocalCertificateProvider>();
+            _kernel.Bind<IConsole>().To<StandardConsole>();
 
-            Parser.Default.ParseVerbs<ListCommand, GetCommand, VaultCommand, AuthCommand>(args)
+            Parser.Default.ParseVerbs<ListCommand, GetCommand, SetCommand, VaultCommand, AuthCommand>(args)
                           .WithParsed<Command>(ExecuteCommand);
         }
 

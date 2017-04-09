@@ -1,4 +1,6 @@
 ﻿
+using Mjcheetham.KeyVaultCommandLine.Configuration.Model;
+
 namespace Mjcheetham.KeyVaultCommandLine.Configuration
 {
     internal interface IConfigurationManager

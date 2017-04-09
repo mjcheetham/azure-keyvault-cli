@@ -1,6 +1,8 @@
 ﻿using System;
 using CommandLine;
 using Mjcheetham.KeyVaultCommandLine.Configuration;
+using Mjcheetham.KeyVaultCommandLine.Configuration.Model;
+using Mjcheetham.KeyVaultCommandLine.Services;
 using Ninject;
 
 namespace Mjcheetham.KeyVaultCommandLine.Commands
@@ -15,6 +17,9 @@ namespace Mjcheetham.KeyVaultCommandLine.Commands
 
         [Inject]
         public IConfigurationManager ConfigurationManager { get; set; }
+
+        [Inject]
+        public ICertificateProvider CertificateProvider { get; set; }
 
         protected void WriteInfo(string message)
         {
@@ -58,7 +63,7 @@ namespace Mjcheetham.KeyVaultCommandLine.Commands
             }
             else
             {
-                var certificate = CertificateHelper.FindCertificateByThumbprint(authConfig.CertificateThumbprint);
+                var certificate = CertificateProvider.FindCertificateByThumbprint(authConfig.CertificateThumbprint);
                 if (certificate == null)
                 {
                     throw new Exception($"No certificate with thumbprint {authConfig.CertificateThumbprint} could be found.");

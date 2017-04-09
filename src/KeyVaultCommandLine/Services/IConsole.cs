@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Mjcheetham.KeyVaultCommandLine
+namespace Mjcheetham.KeyVaultCommandLine.Services
 {
     internal interface IConsole
     {

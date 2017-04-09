@@ -3,6 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Mjcheetham.KeyVaultCommandLine.Configuration.Model;
 
 namespace Mjcheetham.KeyVaultCommandLine.Configuration
 {

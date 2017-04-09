@@ -1,6 +1,7 @@
 ﻿using System;
 using CommandLine;
 using Mjcheetham.KeyVaultCommandLine.Configuration;
+using Mjcheetham.KeyVaultCommandLine.Configuration.Model;
 
 namespace Mjcheetham.KeyVaultCommandLine.Commands
 {
