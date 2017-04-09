@@ -7,13 +7,15 @@
 
         public const string Auth_Param_Url_Help = "Vault URL or regular expression";
 
-        public const string VaultList_Verb_Help = "Manage known vaults (List)";
+        public const string Vault_Verb_Help = "Manage known vaults";
 
-        public const string VaultAdd_Verb_Help = "Manage known vaults (Add)";
+        public const string VaultList_Verb_Help = "List known vaults";
+
+        public const string VaultAdd_Verb_Help = "Add a new vault to the known vaults";
         public const string VaultAdd_Param_Name_Help = "Name of the vault";
         public const string VaultAdd_Param_Url_Help = "URL for the vault";
 
-        public const string VaultRemove_Verb_Help = "Manage known vaults (Remove)";
+        public const string VaultRemove_Verb_Help = "Remove a known vault";
         public const string VaultRemove_Param_Name_Help = "Name of the vault";
 
         public const string AuthList_Verb_Help = "Manage authentication configuration (List)";

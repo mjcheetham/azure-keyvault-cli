@@ -18,20 +18,16 @@ namespace Mjcheetham.KeyVaultCommandLine
         public static void Main(string[] args)
         {
             Parser.Default
-                .ParseArguments<ListOptions, GetOptions,
-                                VaultListOptions, VaultAddOptions, VaultRemoveOptions,
-                                AuthListOptions, AuthAddOptions, AuthRemoveOptions>(args)
+                .ParseVerbs<ListOptions, GetOptions, VaultOptions, AuthListOptions, AuthAddOptions, AuthRemoveOptions>(args)
                 .WithParsed<ListOptions>(List)
                 .WithParsed<GetOptions>(Get)
-                .WithParsed<VaultListOptions>(VaultList)
-                .WithParsed<VaultAddOptions>(VaultAdd)
-                .WithParsed<VaultRemoveOptions>(VaultRemove)
+                .WithParsed<VaultOptions>(Vault)
                 .WithParsed<AuthListOptions>(AuthList)
                 .WithParsed<AuthAddOptions>(AuthAdd)
                 .WithParsed<AuthRemoveOptions>(AuthRemove);
         }
 
-        #region Option handlers
+        #region Secret handlers
 
         private static void List(ListOptions options)
         {
@@ -112,7 +108,23 @@ namespace Mjcheetham.KeyVaultCommandLine
             }
         }
 
-        private static void VaultList(VaultListOptions options)
+        private static void Vault(VaultOptions options)
+        {
+            if (options is VaultOptions.ListOptions)
+            {
+                VaultList((VaultOptions.ListOptions) options);
+            }
+            else if (options is VaultOptions.AddOptions)
+            {
+                VaultAdd((VaultOptions.AddOptions)options);
+            }
+            else if (options is VaultOptions.RemoveOptions)
+            {
+                VaultRemove((VaultOptions.RemoveOptions)options);
+            }
+        }
+
+        private static void VaultList(VaultOptions.ListOptions options)
         {
             if (options.Verbose)
             {
@@ -127,7 +139,7 @@ namespace Mjcheetham.KeyVaultCommandLine
             }
         }
 
-        private static void VaultAdd(VaultAddOptions options)
+        private static void VaultAdd(VaultOptions.AddOptions options)
         {
             var configManager = CreateConfigurationManger();
 
@@ -136,7 +148,7 @@ namespace Mjcheetham.KeyVaultCommandLine
             configManager.SaveConfiguration();
         }
 
-        private static void VaultRemove(VaultRemoveOptions options)
+        private static void VaultRemove(VaultOptions.RemoveOptions options)
         {
             var configManager = new ConfigurationManager();
 
