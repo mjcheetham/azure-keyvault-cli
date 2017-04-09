@@ -17,6 +17,10 @@
 
         public const string VaultRemove_Verb_Help = "Remove a known vault";
 
+        public const string VaultRename_Verb_Help = "Rename a known vault";
+        public const string VaultRename_Param_OldName_Help = "Existing name of the vault";
+        public const string VaultRename_Param_NewName_Help = "New name for the vault";
+
         #endregion
 
         #region Auth

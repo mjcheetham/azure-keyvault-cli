@@ -23,6 +23,7 @@ $ kv vault add fish "https://fish.vault.azure.net"
 ```
 
 #### Remove a known vault for the current user
+
 ```
 kv vault remove <name>
 ```
@@ -45,6 +46,18 @@ kv vault list [--verbose]
 $ kv vault list
 foo: https://foo.vault.azure.net
 bar: https://bar.vault.azure.net
+```
+
+#### Rename a known vault for the current user
+
+```
+kv vault rename <old-name> <new-name>
+```
+
+##### Examples
+
+```
+$ kv vault rename bar altbar
 ```
 
 ### Managing authentication configuration

@@ -5,7 +5,7 @@ using Mjcheetham.KeyVaultCommandLine.Configuration;
 namespace Mjcheetham.KeyVaultCommandLine.Commands
 {
     [Verb("vault", HelpText = Strings.Vault_Verb_Help)]
-    [ChildVerbs(typeof(ListCommand), typeof(AddCommand), typeof(RemoveCommand))]
+    [ChildVerbs(typeof(ListCommand), typeof(AddCommand), typeof(RemoveCommand), typeof(RenameCommand))]
     internal abstract class VaultCommand : Command
     {
         [Verb("list", HelpText = Strings.VaultList_Verb_Help)]
@@ -55,6 +55,36 @@ namespace Mjcheetham.KeyVaultCommandLine.Commands
                 {
                     ConfigurationManager.SaveConfiguration();
                 }
+            }
+        }
+
+        [Verb("rename", HelpText = Strings.VaultRename_Verb_Help)]
+        public class RenameCommand : VaultCommand
+        {
+            [Value(0, MetaName = "old-name", Required = true, HelpText = Strings.VaultRename_Param_OldName_Help)]
+            public string OldName { get; set; }
+
+            [Value(1, MetaName = "new-name", Required = true, HelpText = Strings.VaultRename_Param_NewName_Help)]
+            public string NewName { get; set; }
+
+            public override void Execute()
+            {
+                var existingConfig = ConfigurationManager.GetVaultConfig(OldName);
+                if (existingConfig == null)
+                {
+                    WriteError($"Unknown vault '{OldName}'");
+                    return;
+                }
+
+                if (ConfigurationManager.Configuration.KnownVaults.ContainsKey(NewName))
+                {
+                    WriteError($"A vault with the name '{NewName}' already exists");
+                    return;
+                }
+
+                ConfigurationManager.Configuration.KnownVaults.Remove(OldName);
+                ConfigurationManager.Configuration.KnownVaults[NewName] = existingConfig;
+                ConfigurationManager.SaveConfiguration();
             }
         }
     }
