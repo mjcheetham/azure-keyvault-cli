@@ -90,12 +90,10 @@
     <Compile Include="KeyVaultAuthenticationType.cs" />
     <Compile Include="Configuration\Model\VaultConfig.cs" />
     <Compile Include="KeyVaultService.cs" />
-    <Compile Include="Options\AuthListOptions.cs" />
     <Compile Include="ChildVerbsAttribute.cs" />
+    <Compile Include="Options\AuthOptions.cs" />
     <Compile Include="Options\ListOptions.cs" />
     <Compile Include="Options\GetOptions.cs" />
-    <Compile Include="Options\AuthAddOptions.cs" />
-    <Compile Include="Options\AuthRemoveOptions.cs" />
     <Compile Include="Options\VaultOptions.cs" />
     <Compile Include="Options\VerboseOptions.cs" />
     <Compile Include="ParserExtensions.cs" />

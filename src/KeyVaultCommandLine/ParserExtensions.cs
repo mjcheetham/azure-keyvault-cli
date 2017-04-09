@@ -33,7 +33,7 @@ namespace Mjcheetham.KeyVaultCommandLine
                 var subVerbsAttribute = type.GetCustomAttribute<ChildVerbsAttribute>();
                 if (subVerbsAttribute != null)
                 {
-                    return ParseVerbs(parser, argsArray.Skip(1).ToArray(), subVerbsAttribute.Types);
+                    return ParseVerbs(parser, argsArray.Skip(1).ToArray(), subVerbsAttribute.Types.ToArray());
                 }
 
                 break;

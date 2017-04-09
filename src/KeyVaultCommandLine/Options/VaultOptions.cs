@@ -12,17 +12,17 @@ namespace Mjcheetham.KeyVaultCommandLine.Options
         [Verb("add", HelpText = Strings.VaultAdd_Verb_Help)]
         public class AddOptions : VaultOptions
         {
-            [Value(0, MetaName = "name", Required = true, HelpText = Strings.VaultAdd_Param_Name_Help)]
+            [Value(0, MetaName = "name", Required = true, HelpText = Strings.Vault_Param_Name_Help)]
             public string Name { get; set; }
 
             [Value(1, MetaName = "url", Required = true, HelpText = Strings.VaultAdd_Param_Url_Help)]
             public string Url { get; set; }
         }
 
-        [Verb("remove", HelpText = Strings.VaultRemove_Param_Name_Help)]
+        [Verb("remove", HelpText = Strings.VaultRemove_Verb_Help)]
         public class RemoveOptions : VaultOptions
         {
-            [Value(0, MetaName = "name", Required = true, HelpText = Strings.VaultRemove_Verb_Help)]
+            [Value(0, MetaName = "name", Required = true, HelpText = Strings.Vault_Param_Name_Help)]
             public string Name { get; set; }
         }
     }
