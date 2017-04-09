@@ -11,38 +11,38 @@ This command line tool allows simple access to list and read secrets from Azure 
 #### Register a known vault for the current user
 
 ```
-kv vault-add <name> <url>
+kv vault add <name> <url>
 ```
 
 ##### Examples
 
 ```
-$ kv vault-add foo "https://foo.vault.azure.net"
-$ kv vault-add bar "https://bar.vault.azure.net"
-$ kv vault-add fish "https://fish.vault.azure.net"
+$ kv vault add foo "https://foo.vault.azure.net"
+$ kv vault add bar "https://bar.vault.azure.net"
+$ kv vault add fish "https://fish.vault.azure.net"
 ```
 
 #### Remove a known vault for the current user
 ```
-kv vault-remove <name>
+kv vault remove <name>
 ```
 
 ##### Examples
 
 ```
-$ kv vault-remove fish
+$ kv vault remove fish
 ```
 
 #### List all known vaults for the current user
 
 ```
-kv vault-list [--verbose]
+kv vault list [--verbose]
 ```
 
 ##### Examples
 
 ```
-$ kv vault-list
+$ kv vault list
 foo: https://foo.vault.azure.net
 bar: https://bar.vault.azure.net
 ```
@@ -52,39 +52,39 @@ bar: https://bar.vault.azure.net
 #### Add/set authentication configuration for a vault URL or URL regular expression
 
 ```
-kv auth-add --url <url> --clientid <client-id> [--thumbprint <cert-thumbprint>]
+kv auth add --url <url> --clientid <client-id> [--thumbprint <cert-thumbprint>]
 ```
 
 ##### Examples
 
 ```
-$ kv auth-add --url "https://example.vault.azure.net" --clientid "40E419BC-DF98-4456-9B75-9A2C9C67AE02"
-$ kv auth-add --url "https://fish.vault.azure.net" --clientid "40E419BC-DF98-4456-9B75-9A2C9C67AE02" --thumbprint "25DBE...36EA8"
-$ kv auth-add --url "https:\/\/(foo|bar)\d+.vault.azure.net" --clientid "40E419BC-DF98-4456-9B75-9A2C9C67AE02"
+$ kv auth add --url "https://example.vault.azure.net" --clientid "40E419BC-DF98-4456-9B75-9A2C9C67AE02"
+$ kv auth add --url "https://fish.vault.azure.net" --clientid "40E419BC-DF98-4456-9B75-9A2C9C67AE02" --thumbprint "25DBE...36EA8"
+$ kv auth add --url "https:\/\/(foo|bar)\d+.vault.azure.net" --clientid "40E419BC-DF98-4456-9B75-9A2C9C67AE02"
 ```
 
 #### Remove an authentication configuration for a vault URL or URL regular expression
 
 ```
-kv auth-remove --url <url>
+kv auth remove --url <url>
 ```
 
 ##### Examples
 
 ```
-$ kv auth-remove --url "https://example.vault.azure.net"
+$ kv auth remove --url "https://example.vault.azure.net"
 ```
 
 #### List all authentication configurations
 
 ```
-kv auth-list
+kv auth list
 ```
 
 ##### Examples
 
 ```
-$ kv auth-list
+$ kv auth list
 {
   "http://fish.vault.azure.net": {
     "client": "40E419BC-DF98-4456-9B75-9A2C9C67AE02",
@@ -135,7 +135,6 @@ thisisthepassword
 
 - This tool does not support Key Vault _certificates_ or _keys_ at this time.
 - To be able to authenticate with a Key Vault, you must have first configured an AAD Application (and know it's ID _(client ID)_) with 'Get' and 'List' permissions for secrets. In a future version the goal is to add the capability to automatically provision this.
-- The CommandLineParser library does not support(?) nested verbs. It would be better to make all the `vault-*` and `auth-*` top-level verbs into nested verbs (ie., `kv vault add` rather than `kv vault-add`).
 
 ## Disclaimer
 
