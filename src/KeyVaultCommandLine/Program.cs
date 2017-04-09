@@ -18,7 +18,7 @@ namespace Mjcheetham.KeyVaultCommandLine
             _kernel.Bind<ICertificateProvider>().To<LocalCertificateProvider>();
             _kernel.Bind<IConsole>().To<StandardConsole>();
 
-            Parser.Default.ParseVerbs<ListCommand, GetCommand, SetCommand, VaultCommand, AuthCommand>(args)
+            Parser.Default.ParseVerbs<ListCommand, GetCommand, SetCommand, DeleteCommand, VaultCommand, AuthCommand>(args)
                           .WithParsed<Command>(ExecuteCommand);
         }
 

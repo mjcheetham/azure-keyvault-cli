@@ -11,5 +11,7 @@ namespace Mjcheetham.KeyVaultCommandLine.Services
         IEnumerable<SecretItem> GetSecrets(Uri vaultUri);
 
         SecretBundle SetSecret(Uri vaultUri, string secretName, string secretValue);
+
+        SecretBundle DeleteSecret(Uri vaultUri, string secretName);
     }
 }

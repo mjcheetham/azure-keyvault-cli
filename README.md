@@ -130,7 +130,7 @@ third-secret
 #### Retrieve a secret as plain-text
 
 ```
-kv get <vault> <secret> [--force]
+kv get <vault> <secret> [--force] [--verbose]
 ```
 
 ##### Examples
@@ -155,6 +155,19 @@ kv set <vault> <secret> <value>
 ```
 $ kv set foo supersecret b3tt3rPa55w0rd
 INFO: Secret 'supersecret' was set successfully
+```
+
+#### Delete a secret
+
+```
+kv delete <vault> <secret> --force [--verbose]
+```
+
+##### Examples
+
+```
+$ kv delete foo supersecret --force
+INFO: Secret 'supersecret' was deleted successfully
 ```
 
 ## Limitations

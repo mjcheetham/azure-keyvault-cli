@@ -67,6 +67,11 @@ namespace Mjcheetham.KeyVaultCommandLine.Services
             return _keyVaultClient.SetSecretAsync(vaultUri.ToString(), secretName, secretValue).GetAwaiter().GetResult();
         }
 
+        public SecretBundle DeleteSecret(Uri vaultUri, string secretName)
+        {
+            return _keyVaultClient.DeleteSecretAsync(vaultUri.ToString(), secretName).GetAwaiter().GetResult();
+        }
+
         #endregion
 
         #region Private

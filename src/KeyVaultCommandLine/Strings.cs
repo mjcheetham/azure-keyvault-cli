@@ -58,5 +58,12 @@
         public const string Set_Param_Value_Help = "Secret value to store in the vault";
 
         #endregion
+
+        #region Delete
+
+        public const string Delete_Verb_Help = "Delete a secret from a Key Vault";
+        public const string Delete_Param_Force_Help = "Delete the secret";
+
+        #endregion
     }
 }
