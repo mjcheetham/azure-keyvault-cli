@@ -34,6 +34,11 @@ namespace Mjcheetham.KeyVaultCommandLine.Commands
             }
 
             var authConfig = ConfigurationManager.GetAuthConfig(vaultConfig);
+            if (authConfig == null)
+            {
+                WriteError($"No authentication methods have been configured for vault '{Vault}'; see `kv auth`");
+                return;
+            }
 
             IKeyVaultService kvService = CreateVaultService(authConfig);
 
