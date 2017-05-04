@@ -59,7 +59,25 @@ namespace Mjcheetham.KeyVaultCommandLine.Services
 
         public IEnumerable<SecretItem> GetSecrets(Uri vaultUri)
         {
-            return _keyVaultClient.GetSecretsAsync(vaultUri.ToString()).GetAwaiter().GetResult();
+            var result = _keyVaultClient.GetSecretsWithHttpMessagesAsync(vaultUri.ToString()).GetAwaiter().GetResult();
+            foreach (var item in result.Body)
+            {
+                yield return item;
+            }
+
+            var nextLink = result.Body.NextPageLink;
+
+            while (nextLink != null)
+            {
+                result = _keyVaultClient.GetSecretsNextWithHttpMessagesAsync(nextLink).GetAwaiter().GetResult();
+
+                foreach (var item in result.Body)
+                {
+                    yield return item;
+                }
+
+                nextLink = result.Body.NextPageLink;
+            }
         }
 
         public SecretBundle SetSecret(Uri vaultUri, string secretName, string secretValue)
